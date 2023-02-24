@@ -1,0 +1,2 @@
+C:\Git Repos\Kazang Final\KazangTest\Kazang\Kazang\obj\Debug\Kazang.csproj.AssemblyReference.cache
+C:\Git Repos\Kazang Final\KazangTest\Kazang\Kazang\obj\Debug\Kazang.csproj.CoreCompileInputs.cache
