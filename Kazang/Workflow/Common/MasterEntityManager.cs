@@ -12,23 +12,45 @@ namespace Kazang.Workflow
     {
         public MasterEntityManager() { }
 
-        public EntityCollection RetrieveProperties(Guid MasterEntityGUID, IOrganizationService CrmService)
+        public EntityCollection RetrieveProperties(Guid EntityGUID, IOrganizationService CrmService, String entityName)
         {
             String RetLog = String.Empty;
             EntityCollection entityCollection = null;
             try
             {
-                String FetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                String FetchXML = String.Empty;
+
+                switch (entityName)
+                {
+                    case "new_masterentity":
+                        FetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
                                                 <entity name='new_property'>
                                                 <attribute name='new_name' />
                                                 <attribute name='new_propertyid' />
                                                 <attribute name='new_propertyvalue' />
                                                 <order attribute='createdon' descending='true' />
                                                 <filter type='and'>  
-                                                   <condition attribute='new_masterid' operator='eq' value='" + MasterEntityGUID + @"' />                                              
+                                                   <condition attribute='new_masterid' operator='eq' value='" + EntityGUID + @"' />                                              
                                                 </filter>
                                                 </entity>
                                             </fetch>";
+                        break;
+                    case "new_subentity":
+                        FetchXML = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                            <entity name='new_property'>
+                            <attribute name='new_name' />
+                            <attribute name='new_propertyid' />
+                            <attribute name='new_propertyvalue' />
+                            <order attribute='createdon' descending='true' />
+                            <filter type='and'>  
+                                <condition attribute='new_subid' operator='eq' value='" + EntityGUID + @"' />                                              
+                            </filter>
+                            </entity>
+                        </fetch>";
+                        break;
+                    default:
+                        break;
+                }
 
                 entityCollection = ExecuteFetch(CrmService, FetchXML);
                 if (entityCollection != null)
@@ -62,5 +84,55 @@ namespace Kazang.Workflow
                 throw new Exception(ex.Message.ToString());
             }
         }
+
+        public Entity RetrieveMasterEntity(Guid masterGUID, IOrganizationService _service)
+        {
+            EntityCollection entityCollection = null;
+            Entity entity = null;
+            string FetchXML = String.Empty;
+
+            try
+            {
+
+                FetchXML = String.Format(@"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                <entity name='new_masterentity'>
+                                <attribute name='new_masterentityid' />
+                                <filter type='and'>
+                                    <condition attribute='new_masterentityid' operator='eq' value='{0}' />
+                                </filter>
+                                </entity>
+                            </fetch>", masterGUID);
+
+                entityCollection = ExecuteFetch(_service, FetchXML);
+
+                if (entityCollection.Entities.Count > 0)
+                {
+                    entity = entityCollection[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                entityCollection = null;
+            }
+            return entity;
+        }
+
+        public String UpdateMasterEntity(IOrganizationService CrmService, Entity entity, String authData1, String authData2)
+        {
+            String RetCode = String.Empty;
+            try
+            {
+                entity["new_authorizedsubdata1"] = authData1;
+                entity["new_authorizedsubdata2"] = authData2;
+                CrmService.Update(entity);
+                RetCode = "Successful";
+            }
+            catch (Exception ex)
+            {
+                RetCode = "FAILED TO UPDATE MASTER ENTITY";
+            }
+            return RetCode;
+        }
+
     }
 }

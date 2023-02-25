@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\PropertiesManager.cs" />
+    <Compile Include="SubEntityAuthorized.cs" />
     <Compile Include="SyncProperties.cs" />
     <Compile Include="Common\MasterEntityManager.cs" />
     <Compile Include="Common\SubEntityManager.cs" />
