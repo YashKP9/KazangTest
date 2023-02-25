@@ -37,9 +37,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Solution Files\Question 1\" />
+    <Folder Include="Solution Files\Question 2\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web Resources\Javascript\CrmJS.Kazang.MasterEntity.js" />
+    <Content Include="Web Resources\Javascript\CrmJS.Kazang.SubEntity.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
