@@ -12,13 +12,23 @@ namespace Kazang.Workflow
     {
         public PropertiesManager() { }
 
-        public Entity MapPropertiesParameters(Entity Property, Guid subID)
+        public Entity MapPropertiesParameters(Entity Property, Guid guidID, String entityType)
         {
             Entity newProperty = new Entity("new_property");
             newProperty["new_name"] = Property["new_name"];
             newProperty["new_propertyvalue"] = Property["new_propertyvalue"];
-            newProperty["new_subid"] = new EntityReference("new_subentity", subID);
 
+            switch (entityType)
+            {
+                case "new_masterentity":
+                    newProperty["new_masterid"] = new EntityReference("new_masterentity", guidID);
+                    break;
+                case "new_subentity":
+                    newProperty["new_subid"] = new EntityReference("new_subentity", guidID);
+                    break;
+                default:
+                    break;
+            }
             return newProperty;
         }
 

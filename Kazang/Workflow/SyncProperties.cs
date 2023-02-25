@@ -59,7 +59,7 @@ namespace Kazang.Workflow
 
                 foreach (Entity entProperty in entProperties.Entities)
                 {
-                    Entity newSubProperty = pm.MapPropertiesParameters(entProperty, subID.Id);
+                    Entity newSubProperty = pm.MapPropertiesParameters(entProperty, subID.Id, "new_subentity");
                     _service.Create(newSubProperty);
                     RetLog = RetLog + "Property Created: " + entProperty["new_name"];
                 }

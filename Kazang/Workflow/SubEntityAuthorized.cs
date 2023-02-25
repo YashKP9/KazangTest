@@ -67,35 +67,42 @@ namespace Kazang.Workflow
                         RetLog = mem.UpdateMasterEntity(_service, master, authData1, authData2);
                     }
                     else { RetLog = RetLog + "Master Not Found"; }
-                }
 
-                EntityCollection entProperties = mem.RetrieveProperties(subID.Id, _service, "new_subentity");
-                if (entProperties != null)
-                {
-                    RetLog = RetLog + "Properties Count: " + entProperties.Entities.Count;
-                }
-                else
-                {
-                    RetLog = RetLog + "No properties found. ";
-                }
 
-                foreach (Entity entSubProperty in entProperties.Entities)
-                {
-                    Entity masterProperty = pm.FindPropertyonMaster(entSubProperty, memID.Id, _service);
-                    if (masterProperty != null)
+                    EntityCollection entProperties = mem.RetrieveProperties(subID.Id, _service, "new_subentity");
+                    if (entProperties != null)
                     {
-                        RetLog = RetLog + "Master Properties Found";
-                        RetLog = RetLog + "\nProperty Value: " + masterProperty["new_propertyvalue"];
+                        RetLog = RetLog + "Properties Count: " + entProperties.Entities.Count;
                     }
                     else
                     {
-                        RetLog = RetLog + "No Master properties Found. ";
+                        RetLog = RetLog + "No properties found. ";
                     }
-                    if (entSubProperty.Attributes.Contains("new_propertyvalue") && !String.IsNullOrEmpty(entSubProperty["new_propertyvalue"].ToString()))
+
+                    foreach (Entity entSubProperty in entProperties.Entities)
                     {
-                        masterProperty = pm.MapMasterPropertiesParameters(entSubProperty, masterProperty);
-                        _service.Update(masterProperty);
-                        RetLog = RetLog + "Master Property Updated";
+                        Entity masterProperty = pm.FindPropertyonMaster(entSubProperty, memID.Id, _service);
+                        if (masterProperty != null)
+                        {
+                            RetLog = RetLog + "Master Properties Found";
+                            RetLog = RetLog + "\nProperty Value: " + masterProperty["new_propertyvalue"];
+
+                            if (entSubProperty.Attributes.Contains("new_propertyvalue") && !String.IsNullOrEmpty(entSubProperty["new_propertyvalue"].ToString()))
+                            {
+                                masterProperty = pm.MapMasterPropertiesParameters(entSubProperty, masterProperty);
+                                _service.Update(masterProperty);
+                                RetLog = RetLog + "Master Property Updated";
+                            }
+                        }
+                        else
+                        {
+                            RetLog = RetLog + "No Master properties Found. ";
+                            //Question 7: Create New Property on Master:
+                            Entity newMasterProperty = pm.MapPropertiesParameters(entSubProperty, memID.Id, "new_masterentity");
+                            _service.Create(newMasterProperty);
+                            RetLog = RetLog + "\nAdded Property from Sub to Master. ";
+                        }
+
                     }
                 }
             }
