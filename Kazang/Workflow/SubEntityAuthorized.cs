@@ -64,7 +64,7 @@ namespace Kazang.Workflow
                     Entity master = mem.RetrieveMasterEntity(memID.Id, _service);
                     if (master != null)
                     {
-                        RetLog = mem.UpdateMasterEntity(_service, master, authData1, authData2);
+                        RetLog = mem.UpdateMasterEntity(_service, master, authData1, authData2, "authDataSync");
                     }
                     else { RetLog = RetLog + "Master Not Found"; }
 

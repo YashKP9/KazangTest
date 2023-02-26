@@ -10,6 +10,8 @@ namespace Kazang.Workflow
 {
     public class MasterEntityManager
     {
+        private Utils UtilManager = new Utils();
+
         public MasterEntityManager() { }
 
         public EntityCollection RetrieveProperties(Guid EntityGUID, IOrganizationService CrmService, String entityName)
@@ -52,7 +54,7 @@ namespace Kazang.Workflow
                         break;
                 }
 
-                entityCollection = ExecuteFetch(CrmService, FetchXML);
+                entityCollection = UtilManager.ExecuteFetch(CrmService, FetchXML);
                 if (entityCollection != null)
                 {
                     RetLog = RetLog + entityCollection.Entities.Count;
@@ -68,21 +70,6 @@ namespace Kazang.Workflow
                 RetLog = RetLog + ex.Message;
             }
             return entityCollection;
-        }
-
-        public EntityCollection ExecuteFetch(IOrganizationService CrmService, string FetchXml)
-        {
-            try
-            {
-                FetchExpression fetch = new FetchExpression(FetchXml);
-                EntityCollection entityCollection = CrmService.RetrieveMultiple(fetch);
-
-                return entityCollection;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message.ToString());
-            }
         }
 
         public Entity RetrieveMasterEntity(Guid masterGUID, IOrganizationService _service)
@@ -103,7 +90,7 @@ namespace Kazang.Workflow
                                 </entity>
                             </fetch>", masterGUID);
 
-                entityCollection = ExecuteFetch(_service, FetchXML);
+                entityCollection = UtilManager.ExecuteFetch(_service, FetchXML);
 
                 if (entityCollection.Entities.Count > 0)
                 {
@@ -117,19 +104,30 @@ namespace Kazang.Workflow
             return entity;
         }
 
-        public String UpdateMasterEntity(IOrganizationService CrmService, Entity entity, String authData1, String authData2)
+        public String UpdateMasterEntity(IOrganizationService CrmService, Entity entity, String authData1, String authData2, String updateType)
         {
             String RetCode = String.Empty;
             try
             {
-                entity["new_authorizedsubdata1"] = authData1;
-                entity["new_authorizedsubdata2"] = authData2;
+                switch (updateType)
+                {
+                    case "authDataSync":
+                        entity["new_authorizedsubdata1"] = authData1;
+                        entity["new_authorizedsubdata2"] = authData2;
+                        break;
+                    case "StatusReason":
+                        entity["statecode"] = new OptionSetValue(0);
+                        entity["statuscode"] = new OptionSetValue(100000001);
+                        break;
+                    default:
+                        break;
+                }
                 CrmService.Update(entity);
                 RetCode = "Successful";
             }
             catch (Exception ex)
             {
-                RetCode = "FAILED TO UPDATE MASTER ENTITY";
+                RetCode = "FAILED TO UPDATE MASTER ENTITY: " + ex.Message;
             }
             return RetCode;
         }

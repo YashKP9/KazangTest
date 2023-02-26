@@ -60,11 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\PropertiesManager.cs" />
+    <Compile Include="Common\Utils.cs" />
     <Compile Include="SubEntityAuthorized.cs" />
     <Compile Include="SyncProperties.cs" />
     <Compile Include="Common\MasterEntityManager.cs" />
     <Compile Include="Common\SubEntityManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateMasterStatusReason.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kazang.snk" />
