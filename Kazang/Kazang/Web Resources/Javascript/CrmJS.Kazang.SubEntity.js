@@ -15,7 +15,10 @@ if (typeof CrmJS.Kazang.SubEntity === "undefined") {
           }, 1);
         },
 
-        onSave: function (context) {
+        onSave: function (executionContext) {
+            debugger;
+            var formContext = executionContext.getFormContext();
+            CrmJS.Kazang.SubEntity.Form.Functions.disableSubFields(formContext);
         },
 
         attachEvents: function () {
@@ -24,6 +27,8 @@ if (typeof CrmJS.Kazang.SubEntity === "undefined") {
 		
         businessRules: function (executionContext, onLoad) { 
             debugger;
+            var formContext = executionContext.getFormContext();
+            CrmJS.Kazang.SubEntity.Form.Functions.disableSubFields(formContext);
         },
 
         init: function () {   
@@ -47,6 +52,25 @@ if (typeof CrmJS.Kazang.SubEntity === "undefined") {
 		alert("Sample Call Invoked");
 		///Accessed by all forms
 		},
+
+        disableSubFields: function (formContext) {
+            debugger;
+            if (formContext.getAttribute("new_authorize").getValue() === true) {
+                //General
+                formContext.getControl("new_name").setDisabled(true);
+                formContext.getControl("createdon").setDisabled(true);
+                formContext.getControl("ownerid").setDisabled(true);
+                formContext.getControl("new_master").setDisabled(true);
+                formContext.getControl("new_authorize").setDisabled(true);
+                formContext.getControl("new_authorisedby").setDisabled(true);
+
+                //Authorized Data
+                formContext.getControl("new_authorizedsubdata1").setDisabled(true);
+                formContext.getControl("new_authorizedsubdata2").setDisabled(true);
+
+                //MasterFields, Disabled at form level.
+            }  
+        },
 
         isNullOrEmpty: function (s) {
             debugger;
