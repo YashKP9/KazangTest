@@ -15,6 +15,7 @@ Constraints:
 1. Trial instance has limitations, connectivity to SDK from XrmToolBox or Plugin Registration Tool.  
 2. Trial Instance performance is slow.
 3. May not have access to Power Automate and CDS in Trial.  However, Power Automate as i mentioned in first interview, i am aiming to upskill in this area over next few months.  However code activities are still applicable in latest version of CRM Online.
+4. First time using Github. I like it! Used to TFS.  
 
 *solution has been testd and working, either in Trial or local VM.
 
